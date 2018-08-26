@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Built-By: rajub
+Build-Jdk: 10.0.1
+Implementation-Title: employee-twitter
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: com.rajusays
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/employee-twitter
+Created-By: Maven Integration for Eclipse
+
