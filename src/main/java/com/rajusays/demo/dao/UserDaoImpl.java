@@ -28,7 +28,7 @@ import com.rajusays.demo.to.UserTO;
 public class UserDaoImpl implements UserDao {
 
 	private static final String PERCENTILE = "%";
-	private static final String UNDERSCORE = "_";
+//	private static final String UNDERSCORE = "_";
 	private static final String SEARCH_STRING = "search_string";
 	private static final String FOLLOWEE = "followee";
 	private static final String FOLLOWER = "follower";
@@ -69,6 +69,49 @@ public class UserDaoImpl implements UserDao {
 		return userTO;
 
 	}
+	
+	@Override
+	public List<UserTO> searchUser(String searchString) {
+		String modifiedSearchString = prepareSearchString(searchString);
+		List<UserTO> users = namedParameterJdbcTemplate.query(SEARCH_USER,
+				new MapSqlParameterSource(SEARCH_STRING, modifiedSearchString), new UserRowMapper());
+		for(UserTO userTO:users) {
+			userTO.setFollowees(getFollowees(userTO.getUserName()));
+			userTO.setFollowers(getFollowers(userTO.getUserName()));
+		}
+		return users;
+	}
+
+	
+	@Override
+	public void followUser(String follower, String followee) {
+		MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+		parameterSource.addValue(FOLLOWER, follower);
+		parameterSource.addValue(FOLLOWEE, followee);
+		namedParameterJdbcTemplate.update(FOLLOW_USER, parameterSource);
+	}
+
+	@Override
+	public void unFollowUser(String follower, String followee) {
+		MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+		parameterSource.addValue(FOLLOWER, follower);
+		parameterSource.addValue(FOLLOWEE, followee);
+		namedParameterJdbcTemplate.update(UNFOLLOW_USER, parameterSource);
+
+	}
+
+	@Override
+	public List<UserTO> getFollowers(String followee) {
+
+		return namedParameterJdbcTemplate.query(SELECT_FOLLOWERS, new MapSqlParameterSource(FOLLOWEE, followee),
+				new UserRowMapper());
+	}
+
+	@Override
+	public List<UserTO> getFollowees(String follower) {
+		return namedParameterJdbcTemplate.query(SELECT_FOLLOWEES, new MapSqlParameterSource(FOLLOWER, follower),
+				new UserRowMapper());
+	}
 
 	private Map<String, String> prepareUserNameParamSource(String userName) {
 		Map<String, String> paramMap = new HashMap<>();
@@ -93,51 +136,10 @@ public class UserDaoImpl implements UserDao {
 		}
 	}
 
-	@Override
-	public void followUser(String follower, String followee) {
-		MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-		parameterSource.addValue(FOLLOWER, follower);
-		parameterSource.addValue(FOLLOWEE, followee);
-		namedParameterJdbcTemplate.update(FOLLOW_USER, parameterSource);
-	}
-
-	@Override
-	public void unFollowUser(String follower, String followee) {
-		MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-		parameterSource.addValue(FOLLOWER, follower);
-		parameterSource.addValue(FOLLOWEE, followee);
-		namedParameterJdbcTemplate.update(UNFOLLOW_USER, parameterSource);
-
-	}
-
-	@Override
-	public List<String> getFollowers(String followee) {
-
-		return namedParameterJdbcTemplate.queryForList(SELECT_FOLLOWERS, new MapSqlParameterSource(FOLLOWEE, followee),
-				String.class);
-	}
-
-	@Override
-	public List<String> getFollowees(String follower) {
-		return namedParameterJdbcTemplate.queryForList(SELECT_FOLLOWEES, new MapSqlParameterSource(FOLLOWER, follower),
-				String.class);
-	}
-
-	@Override
-	public List<UserTO> searchUser(String searchString) {
-		String modifiedSearchString = prepareSearchString(searchString);
-		return namedParameterJdbcTemplate.query(SEARCH_USER,
-				new MapSqlParameterSource(SEARCH_STRING, modifiedSearchString), new UserRowMapper());
-	}
 
 	private String prepareSearchString(String searchString) {
 		searchString = searchString.toUpperCase();
 		String modifiedSearchString = PERCENTILE + searchString + PERCENTILE;
-		/*
-		 * for (int i = 0; i < searchString.length(); i++) { modifiedSearchString +=
-		 * searchString.charAt(i); }
-		 */
-		// modifiedSearchString+=PERCENTILE;
 		return modifiedSearchString;
 	}
 

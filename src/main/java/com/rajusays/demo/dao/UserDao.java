@@ -17,9 +17,9 @@ public interface UserDao {
 	
 	public void unFollowUser(String follower, String followee);
 	
-	public List<String> getFollowers(String followee);
+	public List<UserTO> getFollowers(String followee);
 	
-	public List<String> getFollowees(String follower);
+	public List<UserTO> getFollowees(String follower);
 	
 	public List<UserTO> searchUser(String searchString);
 }

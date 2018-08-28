@@ -21,7 +21,7 @@ public final class SQLConstants {
 
 	public static final String SEARCH_USER = "SELECT user_name, name, date_of_birth, city, state FROM twitter.\"user\" where upper(name) like :search_string or upper(user_name) like :search_string;";
 
-	public static final String SELECT_FOLLOWERS = "select follower from twitter.followers where followee= :followee";
-	public static final String SELECT_FOLLOWEES = "select followee from twitter.followers where follower=:follower";
+	public static final String SELECT_FOLLOWERS = "select follower as user_name, twitter_user.name, twitter_user.city, twitter_user.state, twitter_user.date_of_birth from twitter.followers, twitter.user as twitter_user where twitter_user.user_name=followers.follower AND followers.followee=:followee";
+	public static final String SELECT_FOLLOWEES = "select followee as user_name, twitter_user.name, twitter_user.city, twitter_user.state, twitter_user.date_of_birth from twitter.followers, twitter.user as twitter_user where twitter_user.user_name=followers.followee AND followers.follower=:follower";
 
 }

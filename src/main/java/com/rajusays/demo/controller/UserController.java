@@ -67,7 +67,7 @@ public class UserController {
 		userDao.unFollowUser(follower, followee);
 	}
 
-	@GetMapping("{followee}/followers")
+	/*@GetMapping("{followee}/followers")
 	public List<String> getFollowers(@PathVariable String followee) {
 		return userDao.getFollowers(followee);
 	}
@@ -75,5 +75,5 @@ public class UserController {
 	@GetMapping("{follower}/followees")
 	public List<String> getFollowees(@PathVariable String follower) {
 		return userDao.getFollowees(follower);
-	}
+	}*/
 }
