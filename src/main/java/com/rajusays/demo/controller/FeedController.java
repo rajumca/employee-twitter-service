@@ -31,21 +31,8 @@ public class FeedController {
 	private FeedDao twitterDao;
 
 	@GetMapping("feed")
-	public FeedResponseTO getFeed(@RequestParam String follower) {
-
-		FeedTO feed = new FeedTO();
-		feed.setTweets(twitterDao.getTweets(follower));
-		UserTO user = userDao.get(follower);
-		feed.setUser(user);
-		feed.setId(user.getUserName());
-		FeedResponseTO feedRespone = new FeedResponseTO();
-		feedRespone.setFeed(feed);
-		return feedRespone;
-	}
-
-	@GetMapping("feed/user/{followee}")
-	public List<TweetTO> getUserTweets(@PathVariable String followee, @RequestParam String follower) {
-		return twitterDao.getUserFeed(followee);
+	public FeedResponseTO getFeed(@RequestParam String userName,@RequestParam boolean userTweetsOnly) {
+		return buildFeed(userName, userTweetsOnly);
 	}
 
 	@PostMapping("tweets")
@@ -56,6 +43,25 @@ public class FeedController {
 	@DeleteMapping("tweets/{id}")
 	public void delete(@PathVariable int id) {
 		twitterDao.deleteTweet(id);
+	}
+	
+	private FeedResponseTO buildFeed(String userName, boolean userTweetsOnly) {
+		FeedResponseTO feedRespone = new FeedResponseTO();
+		
+		List<TweetTO> tweets = null;
+		if(userTweetsOnly) {
+			tweets=twitterDao.getUserTweets(userName);
+		}else {
+			tweets=twitterDao.getFeed(userName);
+		}
+		FeedTO feed = new FeedTO();
+		feed.setTweets(tweets);
+		UserTO user = userDao.get(userName);
+		feed.setUser(user);
+		feed.setId(user.getUserName());
+		
+		feedRespone.setFeed(feed);
+		return feedRespone;
 	}
 
 }

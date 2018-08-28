@@ -12,7 +12,7 @@ public final class SQLConstants {
 	public static final String DELETE_USER = "DELETE FROM twitter.user WHERE user_name = :user_name";
 
 	public static final String SELECT_FEED = "SELECT tweet.id, tweet.message, tweet.time, tweet.user_name, tweet_user.name FROM twitter.tweet as tweet, twitter.user as tweet_user WHERE  tweet_user.user_name=tweet.user_name AND (tweet.user_name in (select followee from twitter.followers where follower=:user_name) OR tweet.user_name=:user_name) order by time desc";
-	public static final String SELECT_TWEET = "SSELECT tweet.id, tweet.message, tweet.time, tweet.user_name, tweet_user.name FROM twitter.tweet as tweet, twitter.user as tweet_user WHERE  tweet_user.user_name=tweet.user_name AND tweet.user_name=:user_name order by time desc";
+	public static final String SELECT_TWEET = "SELECT tweet.id, tweet.message, tweet.time, tweet.user_name, tweet_user.name FROM twitter.tweet as tweet, twitter.user as tweet_user WHERE  tweet_user.user_name=tweet.user_name AND tweet.user_name=:user_name order by time desc";
 	public static final String INSERT_TWEET = "INSERT INTO twitter.tweet (id, message, time, user_name) VALUES (nextval('serial'),:message, :time, :user_name)";
 	public static final String UPDATE_TWEET = "UPDATE twitter.tweet SET message=:message, time=:time WHERE id=:id";
 	public static final String DELETE_TWEET = "DELETE FROM twitter.tweet WHERE id=:id";
