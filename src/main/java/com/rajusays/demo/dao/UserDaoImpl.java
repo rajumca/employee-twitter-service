@@ -10,6 +10,7 @@ import static com.rajusays.demo.SQLConstants.SELECT_USER;
 import static com.rajusays.demo.SQLConstants.UNFOLLOW_USER;
 import static com.rajusays.demo.SQLConstants.UPDATE_USER;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -124,6 +125,9 @@ public class UserDaoImpl implements UserDao {
 		MapSqlParameterSource parameterSource = new MapSqlParameterSource();
 		parameterSource.addValue(USER_NAME, userTO.getUserName());
 		parameterSource.addValue(NAME, userTO.getName());
+		if(userTO.getDateOfBirth()==null) {
+			userTO.setDateOfBirth(LocalDate.of(1990, 01, 01));
+		}
 		parameterSource.addValue(DATE_OF_BIRTH, userTO.getDateOfBirth());
 		parameterSource.addValue(CITY, userTO.getCity());
 		parameterSource.addValue(STATE, userTO.getState());

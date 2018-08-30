@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rajusays.demo.dao.UserDao;
+import com.rajusays.demo.to.UserRequestTO;
 import com.rajusays.demo.to.UserTO;
 import com.rajusays.demo.to.UsersResponseTO;
 
@@ -42,8 +43,8 @@ public class UserController {
 	}
 
 	@PostMapping
-	public void createUser(@RequestBody UserTO userTO) {
-		userDao.create(userTO);
+	public void createUser(@RequestBody UserRequestTO userRequest) {
+		userDao.create(userRequest.getUser());
 	}
 
 	@PutMapping("{userName}")
