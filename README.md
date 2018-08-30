@@ -1,6 +1,7 @@
 # employee-twitter-service
 
 TABLES:
+
 -- Table: twitter.followers
 
 -- DROP TABLE twitter.followers;
