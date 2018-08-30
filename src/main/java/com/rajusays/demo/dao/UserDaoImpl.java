@@ -29,7 +29,6 @@ import com.rajusays.demo.to.UserTO;
 public class UserDaoImpl implements UserDao {
 
 	private static final String PERCENTILE = "%";
-//	private static final String UNDERSCORE = "_";
 	private static final String SEARCH_STRING = "search_string";
 	private static final String FOLLOWEE = "followee";
 	private static final String FOLLOWER = "follower";

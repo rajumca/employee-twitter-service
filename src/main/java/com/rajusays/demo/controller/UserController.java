@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.rajusays.demo.dao.UserDao;
 import com.rajusays.demo.to.UserRequestTO;
-import com.rajusays.demo.to.UserTO;
 import com.rajusays.demo.to.UsersResponseTO;
 
 @RestController
@@ -24,14 +23,13 @@ import com.rajusays.demo.to.UsersResponseTO;
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class UserController {
 
-//	private static final String SEARCH = "search";
 	@Autowired
 	private UserDao userDao;
 
 	@GetMapping
 	public UsersResponseTO searchUser(@RequestParam String userName) {
 		UsersResponseTO responseTO = new UsersResponseTO();
-			responseTO.setUsers(userDao.searchUser(userName));
+		responseTO.setUsers(userDao.searchUser(userName));
 		return responseTO;
 	}
 
@@ -48,8 +46,8 @@ public class UserController {
 	}
 
 	@PutMapping("{userName}")
-	public void updateUser(@PathVariable String userName, @RequestBody UserTO userTO) {
-		userDao.update(userName, userTO);
+	public void updateUser(@PathVariable String userName, @RequestBody UserRequestTO userRequest) {
+		userDao.update(userName, userRequest.getUser());
 	}
 
 	@DeleteMapping("{userName}")
@@ -67,13 +65,4 @@ public class UserController {
 		userDao.unFollowUser(follower, followee);
 	}
 
-	/*@GetMapping("{followee}/followers")
-	public List<String> getFollowers(@PathVariable String followee) {
-		return userDao.getFollowers(followee);
-	}
-
-	@GetMapping("{follower}/followees")
-	public List<String> getFollowees(@PathVariable String follower) {
-		return userDao.getFollowees(follower);
-	}*/
 }
