@@ -18,7 +18,7 @@ public class UserRowMapper implements RowMapper<UserTO> {
 	public UserTO mapRow(ResultSet rs, int rowNum) throws SQLException {
 		UserTO user = new UserTO();
 		user.setName(rs.getString(NAME));
-		user.setCity(CITY);
+		user.setCity(rs.getString(CITY));
 		user.setState(rs.getString(STATE));
 		user.setUserName(rs.getString(USER_NAME));
 		user.setDateOfBirth(rs.getDate(DATE_OF_BIRTH).toLocalDate());

@@ -27,12 +27,12 @@ public class FeedDaoImpl implements FeedDao {
 	@Autowired
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-	public List<TweetTO> getTweets(String userName) {
+	public List<TweetTO> getFeed(String userName) {
 		return namedParameterJdbcTemplate.query(SELECT_FEED, new MapSqlParameterSource(USER_NAME, userName),
 				new TweetRowMapper());
 	}
 
-	public List<TweetTO> getUserFeed(String userName) {
+	public List<TweetTO> getUserTweets(String userName) {
 		return namedParameterJdbcTemplate.query(SELECT_TWEET, new MapSqlParameterSource(USER_NAME, userName),
 				new TweetRowMapper());
 

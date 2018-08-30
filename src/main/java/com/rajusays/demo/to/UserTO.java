@@ -12,8 +12,8 @@ public class UserTO implements Serializable{
 	private LocalDate dateOfBirth;
 	private String city;
 	private String state;
-	private List<String> followers;
-	private List<String> followees;
+	private List<UserTO> followers;
+	private List<UserTO> followees;
 
 	public String getUserName() {
 		return userName;
@@ -56,21 +56,23 @@ public class UserTO implements Serializable{
 		this.state = state;
 	}
 
-	public List<String> getFollowers() {
+	public List<UserTO> getFollowers() {
 		return followers;
 	}
 
-	public void setFollowers(List<String> followers) {
+	public void setFollowers(List<UserTO> followers) {
 		this.followers = followers;
 	}
 
-	public List<String> getFollowees() {
+	public List<UserTO> getFollowees() {
 		return followees;
 	}
 
-	public void setFollowees(List<String> followees) {
+	public void setFollowees(List<UserTO> followees) {
 		this.followees = followees;
 	}
+
+	
 
 
 

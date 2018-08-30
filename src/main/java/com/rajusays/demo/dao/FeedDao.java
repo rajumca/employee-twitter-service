@@ -6,8 +6,8 @@ import com.rajusays.demo.to.TweetTO;
 
 
 public interface FeedDao {
-List<TweetTO> getTweets(String userName);
-List<TweetTO> getUserFeed(String userName);
+List<TweetTO> getFeed(String userName);
+List<TweetTO> getUserTweets(String userName);
 public boolean createTweet(TweetTO tweet);
 public boolean deleteTweet(int id);
 

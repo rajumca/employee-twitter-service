@@ -10,6 +10,7 @@ import static com.rajusays.demo.SQLConstants.SELECT_USER;
 import static com.rajusays.demo.SQLConstants.UNFOLLOW_USER;
 import static com.rajusays.demo.SQLConstants.UPDATE_USER;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,6 @@ import com.rajusays.demo.to.UserTO;
 public class UserDaoImpl implements UserDao {
 
 	private static final String PERCENTILE = "%";
-	private static final String UNDERSCORE = "_";
 	private static final String SEARCH_STRING = "search_string";
 	private static final String FOLLOWEE = "followee";
 	private static final String FOLLOWER = "follower";
@@ -69,30 +69,20 @@ public class UserDaoImpl implements UserDao {
 		return userTO;
 
 	}
-
-	private Map<String, String> prepareUserNameParamSource(String userName) {
-		Map<String, String> paramMap = new HashMap<>();
-		paramMap.put(USER_NAME, userName);
-		return paramMap;
-	}
-
-	private MapSqlParameterSource prepareCreateUserParams(UserTO userTO) {
-
-		MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-		parameterSource.addValue(USER_NAME, userTO.getUserName());
-		parameterSource.addValue(NAME, userTO.getName());
-		parameterSource.addValue(DATE_OF_BIRTH, userTO.getDateOfBirth());
-		parameterSource.addValue(CITY, userTO.getCity());
-		parameterSource.addValue(STATE, userTO.getState());
-		return parameterSource;
-	}
-
-	private void checkIfUserNameAlreadyExists(UserTO userTO) {
-		if (get(userTO.getUserName()) != null) {
-			throw new UserAlreadyExistsException();
+	
+	@Override
+	public List<UserTO> searchUser(String searchString) {
+		String modifiedSearchString = prepareSearchString(searchString);
+		List<UserTO> users = namedParameterJdbcTemplate.query(SEARCH_USER,
+				new MapSqlParameterSource(SEARCH_STRING, modifiedSearchString), new UserRowMapper());
+		for(UserTO userTO:users) {
+			userTO.setFollowees(getFollowees(userTO.getUserName()));
+			userTO.setFollowers(getFollowers(userTO.getUserName()));
 		}
+		return users;
 	}
 
+	
 	@Override
 	public void followUser(String follower, String followee) {
 		MapSqlParameterSource parameterSource = new MapSqlParameterSource();
@@ -111,33 +101,48 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public List<String> getFollowers(String followee) {
+	public List<UserTO> getFollowers(String followee) {
 
-		return namedParameterJdbcTemplate.queryForList(SELECT_FOLLOWERS, new MapSqlParameterSource(FOLLOWEE, followee),
-				String.class);
+		return namedParameterJdbcTemplate.query(SELECT_FOLLOWERS, new MapSqlParameterSource(FOLLOWEE, followee),
+				new UserRowMapper());
 	}
 
 	@Override
-	public List<String> getFollowees(String follower) {
-		return namedParameterJdbcTemplate.queryForList(SELECT_FOLLOWEES, new MapSqlParameterSource(FOLLOWER, follower),
-				String.class);
+	public List<UserTO> getFollowees(String follower) {
+		return namedParameterJdbcTemplate.query(SELECT_FOLLOWEES, new MapSqlParameterSource(FOLLOWER, follower),
+				new UserRowMapper());
 	}
 
-	@Override
-	public List<UserTO> searchUser(String searchString) {
-		String modifiedSearchString = prepareSearchString(searchString);
-		return namedParameterJdbcTemplate.query(SEARCH_USER,
-				new MapSqlParameterSource(SEARCH_STRING, modifiedSearchString), new UserRowMapper());
+	private Map<String, String> prepareUserNameParamSource(String userName) {
+		Map<String, String> paramMap = new HashMap<>();
+		paramMap.put(USER_NAME, userName);
+		return paramMap;
 	}
+
+	private MapSqlParameterSource prepareCreateUserParams(UserTO userTO) {
+
+		MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+		parameterSource.addValue(USER_NAME, userTO.getUserName());
+		parameterSource.addValue(NAME, userTO.getName());
+		if(userTO.getDateOfBirth()==null) {
+			userTO.setDateOfBirth(LocalDate.of(1990, 01, 01));
+		}
+		parameterSource.addValue(DATE_OF_BIRTH, userTO.getDateOfBirth());
+		parameterSource.addValue(CITY, userTO.getCity());
+		parameterSource.addValue(STATE, userTO.getState());
+		return parameterSource;
+	}
+
+	private void checkIfUserNameAlreadyExists(UserTO userTO) {
+		if (get(userTO.getUserName()) != null) {
+			throw new UserAlreadyExistsException();
+		}
+	}
+
 
 	private String prepareSearchString(String searchString) {
 		searchString = searchString.toUpperCase();
 		String modifiedSearchString = PERCENTILE + searchString + PERCENTILE;
-		/*
-		 * for (int i = 0; i < searchString.length(); i++) { modifiedSearchString +=
-		 * searchString.charAt(i); }
-		 */
-		// modifiedSearchString+=PERCENTILE;
 		return modifiedSearchString;
 	}
 
